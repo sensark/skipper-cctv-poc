@@ -1,0 +1,8 @@
+.venv/
+.venv-roboflow/
+__pycache__/
+.kilo/
+*.pt
+*.mp4
+.env
+

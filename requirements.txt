@@ -1,0 +1,5 @@
+streamlit>=1.40
+inference-sdk>=1.8.4
+opencv-python>=4.10
+pandas>=2.0
+pillow>=10.0
