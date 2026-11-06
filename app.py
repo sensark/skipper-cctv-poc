@@ -198,14 +198,15 @@ def pill_html() -> str:
 
 with st.sidebar:
     st.markdown("### ⚙️ Control Panel")
-    api_key = st.text_input("Roboflow API key", value=os.environ.get("ROBOFLOW_API_KEY", ""), type="password")
+    api_key = os.environ.get("ROBOFLOW_API_KEY", "")
     camera = st.text_input("Camera", value="CAM-01")
     upload = st.file_uploader("Upload CCTV recording", type=["mp4", "mov", "avi", "mkv"])
     speed = st.select_slider("Playback speed", options=[1, 2, 4, 8], value=1, format_func=lambda v: f"{v}×")
     sample_every = st.slider("Analyse a frame every (video s)", 0.5, 5.0, 1.0, 0.5)
     min_conf = st.slider("Min confidence", 0.1, 0.95, 0.5, 0.05)
     cooldown = st.slider("Alert cooldown (video s)", 2, 30, 8)
-    st.caption(f"Deployment: `{DEPLOYMENT_URL}`")
+    if not api_key:
+        st.caption("Service credentials must be configured before monitoring.")
     start = st.button("▶ Start monitoring", type="primary", use_container_width=True,
                       disabled=upload is None or not api_key)
     st.button("■ Stop", use_container_width=True)
@@ -309,9 +310,8 @@ def run_monitoring(video_bytes: bytes, suffix: str) -> None:
             pending.remove(item)
             try:
                 detections = future.result(timeout=60)
-            except Exception as error:  # surfaced in the UI without stopping playback
+            except Exception:
                 st.session_state.stats["errors"] += 1
-                st.session_state.last_error = str(error)
                 continue
             latest, latest_expiry = detections, video_time + 2 * sample_every
             handle_result(detections, frame, video_time, last_alert_at)
@@ -366,8 +366,11 @@ else:
             unsafe_allow_html=True,
         )
 
-if st.session_state.get("last_error") and st.session_state.stats["errors"]:
-    st.warning(f"{st.session_state.stats['errors']} frame(s) failed. Last error: {st.session_state.last_error}")
+if st.session_state.stats["errors"]:
+    st.warning(
+        f"{st.session_state.stats['errors']} frame(s) failed during analysis. "
+        "Check the application configuration and connectivity."
+    )
 
 incidents = st.session_state.incidents
 if incidents and st.session_state.status != "live":

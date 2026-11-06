@@ -13,7 +13,7 @@ python -m pip install -r requirements.txt
 streamlit run app.py
 ```
 
-Set `ROBOFLOW_API_KEY` in the environment or enter it in the password field in the sidebar. Do not commit the API key to source control; rotate any key that has been shared publicly. The app uses the configured `sensark` workspace and construction-site workflow. Video inference processes all frames; the confidence threshold is applied to returned predictions. The camera number is included in each incident.
+Set `ROBOFLOW_API_KEY` in the environment before starting the app. The key is read from the environment and is not entered in the dashboard. Do not commit the API key to source control; rotate any key that has been shared publicly. The app uses the configured `sensark` workspace and construction-site workflow. Video inference processes all frames; the confidence threshold is applied to returned predictions. The camera number is included in each incident.
 
 Supported video uploads are MP4, AVI, MOV, MKV, and M4V. OpenCV must be able to decode the video to retrieve incident screenshots.
 
