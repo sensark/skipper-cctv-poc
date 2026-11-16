@@ -3,3 +3,5 @@ inference-sdk
 opencv-python
 pandas
 pillow
+python-dotenv
+ultralytics>=8.4.0,<9
