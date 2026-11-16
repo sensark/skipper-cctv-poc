@@ -179,7 +179,7 @@ def ensure_yolo_weights() -> Path:
     return YOLO_WEIGHTS_PATH
 
 
-@st.cache_resource(show_spinner="Preparing the YOLO26n baseline model...")
+@st.cache_resource(show_spinner=" Preparing the Baseline model... ")
 def load_yolo_model() -> Any:
     from ultralytics import YOLO
 
