@@ -156,6 +156,7 @@ def file_sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+@st.cache_resource(show_spinner="Preparing baseline model weights at startup...")
 def ensure_yolo_weights() -> Path:
     if YOLO_WEIGHTS_PATH.is_file() and file_sha256(YOLO_WEIGHTS_PATH) == YOLO_WEIGHTS_SHA256:
         return YOLO_WEIGHTS_PATH
@@ -177,6 +178,12 @@ def ensure_yolo_weights() -> Path:
         if temporary_path is not None and temporary_path.exists():
             temporary_path.unlink()
     return YOLO_WEIGHTS_PATH
+
+
+try:
+    ensure_yolo_weights()
+except (OSError, RuntimeError) as exc:
+    st.warning(f"Could not prepare baseline model weights at startup: {exc}")
 
 
 @st.cache_resource(show_spinner=" Preparing the Baseline model... ")
